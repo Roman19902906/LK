@@ -1,21 +1,8 @@
 import pytest
 import time
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
-
-
-@pytest.yield_fixture(scope="function", autouse=True)
-def start_fun():
-    print("\ntest start")
-    yield
-    print("\ntest finished")
-
-
-@pytest.yield_fixture(scope="class", autouse=True)
-def start_fun1():
-    print("\nFirstTest class started")
-    yield
-    print("\nAll tests in FirstTest finished")
 
 
 class TestFirst():
@@ -38,7 +25,6 @@ class TestFirst():
     def test_5(start_fun):
         print('Тест №5')
 
-
 class TestLogin:
     def test_initWebDriver(self):
         browser = webdriver.Chrome()
@@ -48,3 +34,20 @@ class TestLogin:
         browser.set_window_size(200, 100)
         browser.maximize_window()
         browser.quit()
+
+    def test_incorrectUserNameAndPassword(self, browser):
+        input1 = browser.find_element_by_css_selector("#username")
+        input1.send_keys("TestUser")
+        input2 = browser.find_element_by_css_selector("#password")
+        input2.send_keys("Password")
+        TEXT = lambda: browser.find_element_by_xpath(".//div[text() = 'Invalid credentials.']")
+        try:
+            pytest.assume(TEXT != 'Invalid credentials.')
+        except NoSuchElementException:
+            return False
+        return True
+
+        button = browser.find_element_by_name("_submit")
+        button.click()
+        pytest.assume(TEXT == 'Invalid credentials.')
+
