@@ -17,9 +17,12 @@ def start_fun1():
 
 @pytest.fixture(scope="function")
 def browser():
+    link = 'https://tt-develop.quality-lab.ru/login'
     browser = webdriver.Chrome()
-    browser.get("https://tt-develop.quality-lab.ru")
+    browser.get(link)
     print("\nstart browser..")
     yield browser
     print("\nquit browser..")
     browser.quit()
+
+
