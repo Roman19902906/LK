@@ -1,5 +1,8 @@
 import pytest
 
+def test_first():
+    print('My first autotest running')
+
 
 @pytest.yield_fixture(scope="function", autouse=True)
 def start_fun():
