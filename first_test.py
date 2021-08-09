@@ -25,6 +25,7 @@ class TestFirst():
     def test_5(start_fun):
         print('Тест №5')
 
+        
 class TestLogin:
     def test_initWebDriver(self):
         browser = webdriver.Chrome()
