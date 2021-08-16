@@ -2,27 +2,8 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from pages.login_page import LoginPage
+import time
 
-
-class TestFirst():
-    def test_1(start_fun):
-        print('Тест №1')
-        pytest.assume(2 + 2 == 4)
-
-    def test_2(start_fun):
-        print('Тест №2')
-        pytest.assume(2 + 2 == 5)
-
-    def test_3(start_fun):
-        print('Тест №3')
-        pytest.assume(2 + 2 == 4)
-
-    def test_4(start_fun):
-        print('Тест №3')
-        pytest.assume(1 / 0 == 1)
-
-    def test_5(start_fun):
-        print('Тест №5')
 
 class TestLogin:
     def test_initWebDriver(self):
@@ -44,6 +25,7 @@ class TestLogin:
         page.checking_user()
         page.checking_password()
 
+
 class TestLoginNegativ():
     def test_UserNameAndPassword(self, browser):
         page = LoginPage(browser)
@@ -61,6 +43,21 @@ class TestLoginPositive:
         page.test_avatar_button()
         page.test_checking_name_avatar()
         page.test_checking_email_avatar()
+        time.sleep(5)
 
 
+class TestCalendar:
+    def test_data1(self, auth):
+        page = LoginPage(auth)
+        page.test_cal_button()
+        page.test_data_time()
 
+    def test_month1(self, auth):
+        page = LoginPage(auth)
+        page.test_cal_button()
+        page.test_another_month()
+
+    def test_user1(self, auth):
+        page = LoginPage(auth)
+        page.test_cal_button()
+        page.test_another_user()
