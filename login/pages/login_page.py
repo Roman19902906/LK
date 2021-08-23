@@ -10,7 +10,6 @@ from selenium.webdriver.support import expected_conditions as EC
 import allure
 
 
-
 class LoginPage(BasePage):
     USERNAME = (By.CSS_SELECTOR, "#username")
     PASSWORD = (By.CSS_SELECTOR, "#password")
@@ -64,15 +63,21 @@ class LoginPage(BasePage):
             url = self.browser.current_url
             pytest.assume(url == 'https://tt-develop.quality-lab.ru/login')
 
-    def test_input_username_positive(self):
+    def test_input_username_positive(self, log):
         with allure.step("Ввод логина сотрудника сотрудника: Авто Пользователь"):
             input1 = self.browser.find_element(*LoginPage.USERNAME)
-            input1.send_keys("Авто Пользователь")
+            input1.send_keys(f"{log}")
 
-    def test_input_password_positive(self):
+    def test_input_password_positive(self, password):
         with allure.step("Ввод пароля сотрудника сотрудника: 12345678"):
             input2 = self.browser.find_element(*LoginPage.PASSWORD)
-            input2.send_keys("12345678")
+            input2.send_keys(f"{password}")
+
+    def checking_URL_positive(self, URL1):
+        with allure.step("Проверка URL страницы логина"):
+            url = self.browser.current_url
+            print(url)
+            pytest.assume(url == f"{URL1}"), "Страница не совпадает"
 
     def test_avatar_button(self):
         with allure.step("Клик по кнопке аватара сотрудника"):
@@ -84,14 +89,14 @@ class LoginPage(BasePage):
             name = self.browser.find_element_by_xpath(
                 ".//html/body/div[1]/header/div/div/div[2]/div/div/ul/li/div/div/div[1]/div/div[2]/span[1]")
             name1 = name.text
-            pytest.assume(name1 == "Авто Пользователь")
+            pytest.assume(name1 == "Авто Пользователь"), "Логин не совпдает"
 
     def test_checking_email_avatar(self):
         with allure.step("Проверка Email сотрудника"):
             email = self.browser.find_element_by_xpath(
                 ".//html/body/div[1]/header/div/div/div[2]/div/div/ul/li/div/div/div[1]/div/div[2]/span[2]")
             email1 = email.text
-            pytest.assume(email1 == "1241242@m.r")
+            pytest.assume(email1 == "1241242@m.r"), "Пароль не совпдает"
 
     def test_cal_button(self):
         with allure.step("Переход на страницу календаря"):
