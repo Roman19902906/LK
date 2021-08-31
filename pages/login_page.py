@@ -2,11 +2,8 @@ import pytest
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from .base_page import BasePage
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import allure
-
+from LK.tools.Json.Json import Json
 
 class LoginPage(BasePage):
     def __init__(self, browser):
@@ -27,43 +24,17 @@ class LoginPage(BasePage):
         # Проверка email в кнопке аватара
         self.avataremail = lambda: self.browser.find_element_by_xpath(
                 ".//html/body/div[1]/header/div/div/div[2]/div/div/ul/li/div/div/div[1]/div/div[2]/span[2]")
-        # Поле календаря сотрудника
-        self.calendar = lambda: self.browser.find_element(By.CSS_SELECTOR, "span.fc-title")
-        # Кнопка календаря сотрудника
-        self.buttoncalendar = lambda: self.browser.find_element_by_xpath(
-                ".//html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div[1]/div/form/div/div[3]/div/span/i")
-        # Дата на сайте
-        self.data = lambda: self.browser.find_element_by_xpath(
-            ".//html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/h3")
-        # Проверка полей календаря
-        self.checkcal = lambda: self.browser.find_elements_by_css_selector("span.fc-title")
-        # Выбор сотрудника
-        self.changeempl = lambda: Select(self.browser.find_element_by_tag_name("select"))
-        # Ожидание полей календаря при входе
-        self.wait1 = lambda: WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "span.fc-title")))
-        # Ожидание активации кнопки календаря
-        self.waitbuttoncalen = lambda: WebDriverWait(self.browser, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR,
-                                            "#schedule-filters > form > div > div.text-right.col-lg-3.col-md-12 > button")))
-        # Ожидание активации смены месяца
-        self.waitbuttonmonth = lambda: WebDriverWait(self.browser, 10).until(
-            EC.presence_of_element_located((By.XPATH,
-                                            "//html/body/div[9]/div[2]/table/tbody/tr/td/span[9]")))
-        # Ожидание активации кнопки месяца
-        self.waitbuttoncalenmonth = lambda: WebDriverWait(self.browser, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR,
-                                            "#schedule-filters > form > div > div.text-right.col-lg-3.col-md-12 > button")))
 
     @allure.step('Ввод логина TestUser')
-    def test_input_username(self):
-        self.username().send_keys("TestUser")
+    def input_username(self):
+        self.username().send_keys(Json.data['auth']['incorrect']['login'])
 
     @allure.step('Ввод пароля Password')
-    def test_input_password(self):
-        self.password().send_keys("Password")
+    def input_password(self):
+        self.password().send_keys(Json.data['auth']['incorrect']['password'])
 
     @allure.step('Авторизация')
-    def test_submit_button(self):
+    def submit_button(self):
         self.button().click()
 
     @allure.step('Проверка сообщения Invalid credentials.')
@@ -94,11 +65,11 @@ class LoginPage(BasePage):
         pytest.assume(url == 'https://tt-develop.quality-lab.ru/login')
 
     @allure.step('Ввод логина сотрудника сотрудника: Авто Пользователь')
-    def test_input_username_positive(self, log):
+    def input_username_positive(self, log):
         self.username().send_keys(f"{log}")
 
     @allure.step('Ввод пароля сотрудника сотрудника: 12345678')
-    def test_input_password_positive(self, password):
+    def input_password_positive(self, password):
         self.password().send_keys(f"{password}")
 
     @allure.step('Проверка URL страницы логина')
@@ -107,15 +78,15 @@ class LoginPage(BasePage):
         pytest.assume(url == f"{url1}"), "Страница не совпадает"
 
     @allure.step('Клик по кнопке аватара сотрудника')
-    def test_avatar_button(self):
+    def avatar_button(self):
         self.avatar().click()
 
     @allure.step('Проверка логина сотрудника')
-    def test_checking_name_avatar(self):
+    def checking_name_avatar(self):
         pytest.assume(self.avatarlogin().text == "Авто Пользователь"), "Логин не совпдает"
 
     @allure.step('Проверка Email сотрудника')
-    def test_checking_email_avatar(self):
+    def checking_email_avatar(self):
         pytest.assume(self.avataremail().text == "1241242@m.r"), "Пароль не совпдает"
 
 

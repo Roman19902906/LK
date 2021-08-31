@@ -1,15 +1,10 @@
 import os
-import configparser
+
 import pytest
 from selenium import webdriver
 import allure
 import requests
 
-config = configparser.ConfigParser()
-config.read('settings.ini')
-config.get('User', "password")
-config.get('User', "login")
-config.get('User', "url1")
 
 
 @pytest.fixture(scope="function")
