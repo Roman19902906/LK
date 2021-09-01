@@ -1,7 +1,7 @@
 import json
 
 
-class Json:
+class ConfigTools:
     """
     Класс позволяющий читать json файлы (путь: tools -> Json).
     При ошибке: убрать _delete и добавить пароли в ключ 'login'
