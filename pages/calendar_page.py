@@ -1,10 +1,12 @@
-import pytest
-from selenium.common.exceptions import NoSuchElementException
+import time
+
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
 from .base_page import BasePage
 from datetime import datetime
 import allure
-from LK.tools.Json.Json import ConfigTools
+from LK.tools.Json.ConfigTools import ConfigTools
 
 class CalendarPage(BasePage):
     def __init__(self, browser):
@@ -29,6 +31,8 @@ class CalendarPage(BasePage):
         self.button_calendar = lambda: self.browser.find_element_by_xpath(
             ".//html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div[1]/div/form/div/div[3]/div/span/i")
 
+        self.button_calendar_submit = lambda: self.browser.find_element_by_xpath('// *[ @ id = "schedule-filters"] / form / div / div[4] / button')
+
         # Дата на сайте
         self.date = lambda: self.browser.find_element_by_xpath(
             ".//html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/h3")
@@ -51,7 +55,7 @@ class CalendarPage(BasePage):
 
         # Кнопка смены месяца
         self.month_change = lambda: self.browser.find_element(By.XPATH,
-                                            "/html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div[1]/div/form/div/div[4]/button")
+                                            "//html/body/div[9]/div[2]/table/tbody/tr/td/span[10]")
 
 
     @allure.step('Переход на страницу календаря')
@@ -63,10 +67,8 @@ class CalendarPage(BasePage):
     def check_workdays(self):
         try:
             self.grafik_text()
-        except NoSuchElementException:
-            assert False, 'Не вижу элемент с рабочими днями (зелеными)'
-
-        self.is_exist(find=ConfigTools.data['pages']['calendar']['work'],
+        except:
+            self.is_exist(find=ConfigTools.data['work'],
                       where=self.green_day_text().text,
                       pass_text='Вижу рабочие дни в календаре',
                       fail_text='Не вижу рабочих дней в календаре')
@@ -76,9 +78,8 @@ class CalendarPage(BasePage):
     def check_day_off(self):
         try:
             self.day_off_text()
-        except NoSuchElementException:
-            assert False, 'Не вижу элемент с выходными днями, смотри скриншот'
-        self.is_exist(find=ConfigTools.data['pages']['calendar']['work'],
+        except:
+            self.is_exist(find=ConfigTools.data['holidays'],
                       where=self.day_off_text().text,
                       pass_text='Вижу выходные дни в календаре',
                       fail_text='Не вижу выходных дней в календаре')
@@ -94,9 +95,8 @@ class CalendarPage(BasePage):
         expected = str(datetime.now().month) + str(datetime.now().year)
         try:
             self.grafik_text()
-        except NoSuchElementException:
-            assert False, 'Не вижу элемент с месяцем и годом'
-        self.is_exist(find=expected,
+        except:
+            self.is_exist(find=expected,
                         where=self.grafik_text().text,
                         pass_text='Месяц и год соответствуют ожидаемому',
                         fail_text='Месяц и год не соответствуют ожидаемым')
@@ -112,14 +112,15 @@ class CalendarPage(BasePage):
         return self
 
     def check_another_month(self):
-        self.button_calendar().click()
+        self.button_calendar_submit().click()
         return self
 
     @allure.step('Выбираю сотрудника')
     def choose_another_employee(self):
         self.sotrudnik_dropdown().click()
-        self.sotrudnik_input().send_keys(ConfigTools.data['pages']['calendar']['user'])
+        self.sotrudnik_input().send_keys(ConfigTools.data['user'], Keys.ENTER)
         self.primenit_button().click()
+        time.sleep(15)
         return self
 
 

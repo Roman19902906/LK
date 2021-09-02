@@ -1,28 +1,13 @@
 ﻿{
-  "config": {
-    "project_url": "https://tt-develop.quality-lab.ru/"
-  },
-  "auth": {
-    "correct": {
-      "login": "Тестовый пользователь",
-      "password": "12345678"
-    },
-    "incorrect": {
-      "login": "TestUser",
-      "password": "Test"
-    }
-  },
-  "pages": {
-    "login": {
-      "error": "Invalid credentials."
-    },
-    "report": {
-      "name": "Пользователь",
-      "email": "fake+494@quality-lab.ru"
-    },
-    "calendar": {
-      "user": "Абдулин Ринат",
-      "work": ":00-"
-    }
-  }
+    "project_url": "https://tt-develop.quality-lab.ru/",
+    "correct_login": "Тестовый пользователь",
+    "correct_password": "12345678",
+    "incorrect_login": "TestUser",
+    "incorrect_password": "Test",
+    "login_error": "Invalid credentials.",
+    "name": "Пользователь",
+    "email": "fake+494@quality-lab.ru",
+    "user": "Авто Мяу",
+    "work": "09:00-18:00",
+    "holidays": "' '" 
 }

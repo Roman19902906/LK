@@ -1,7 +1,7 @@
 import pytest
 from LK.pages.login_page import LoginPage
 import allure
-from LK.tools.Json.Json import ConfigTools
+from LK.tools.Json.ConfigTools import ConfigTools
 
 @allure.epic('Негативные проверки входа')
 class TestLogin():

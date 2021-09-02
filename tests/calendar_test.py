@@ -24,7 +24,8 @@ class TestCalendar:
             .wait_calendar_button()\
             .button_another_month()\
             .wait_calendar_button()\
-            .check_another_month()\
+            .check_another_month() \
+            .wait_calendar_button() \
             .check_workdays()\
             .check_day_off()
 

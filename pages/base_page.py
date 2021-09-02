@@ -1,14 +1,14 @@
 from selenium.webdriver.support.wait import WebDriverWait
 import os
-from LK.tools.Json.Json import ConfigTools
+from LK.tools.Json.ConfigTools import ConfigTools
 
 class BasePage:
     def __init__(self, browser):
         self.browser = browser
 
-    login_url = os.path.join(ConfigTools.data['config']['project_url'], 'login')
-    grafik_url = os.path.join(ConfigTools.data['config']['project_url'], 'calendar')
-    otchet_url = os.path.join(ConfigTools.data['config']['project_url'], 'report/group/edit')
+    login_url = os.path.join(ConfigTools.data['project_url'], 'login')
+    grafik_url = os.path.join(ConfigTools.data['project_url'], 'calendar')
+    otchet_url = os.path.join(ConfigTools.data['project_url'], 'report/group/edit')
 
     @property
     def wait_short(self):

@@ -1,8 +1,7 @@
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
 from .base_page import BasePage
 import allure
-from LK.tools.Json.Json import ConfigTools
+from LK.tools.Json.ConfigTools import ConfigTools
 
 
 class LoginPage(BasePage):
@@ -25,16 +24,16 @@ class LoginPage(BasePage):
         self.avatare_mail = lambda: self.browser.find_element_by_xpath(
             ".//html/body/div[1]/header/div/div/div[2]/div/div/ul/li/div/div/div[1]/div/div[2]/span[2]")
 
-    error_message = (ConfigTools.data['pages']['login']['error'])
+    error_message = (ConfigTools.data['login_error'])
 
     @allure.step('Ввод логина TestUser')
     def user_name_input(self):
-        self.user_name().send_keys(ConfigTools.data['auth']['incorrect']['login'])
+        self.user_name().send_keys(ConfigTools.data['incorrect_login'])
         return self
 
     @allure.step('Ввод пароля Password')
     def password_input(self):
-        self.password().send_keys(ConfigTools.data['auth']['incorrect']['password'])
+        self.password().send_keys(ConfigTools.data['incorrect_password'])
         return self
 
     @allure.step('Нажать кнопку авторизации')
@@ -52,9 +51,8 @@ class LoginPage(BasePage):
     def invalidCredentials_isExist(self):
         try:
             self.invalid_text()
-        except NoSuchElementException:
-            return False
-        self.is_exist(find=self.error_message,
+        except:
+            self.is_exist(find=self.error_message,
                       where=self.invalid_text().text,
                       pass_text=self.error_message + ' есть на странице',
                       fail_text=self.error_message + ' нет на странице')
@@ -64,33 +62,26 @@ class LoginPage(BasePage):
     def invalidCredentials_isNotExist(self):
         try:
             self.invalid_text()
-        except NoSuchElementException:
-            return False
-        self.is_not_exist(find=self.error_message,
-                          where=self.invalid_text().text,
-                          pass_text=self.error_message + ' нет на странице',
-                          fail_text=self.error_message + ' есть на странице')
+        except:
+            self.is_not_exist(find=self.error_message,
+                          where=self.invalid_text().text)
         return self
 
     @allure.step('После неудачной авторизации в поле логина присутствует имя пользователя')
     def login_field_with_user(self):
         try:
             self.user_name()
-        except NoSuchElementException:
-            assert False, 'Не найден элемент с текстом логина, смотри скриншот'
-        self.is_exist(find='TestUser',
-                      where=self.user_name().get_attribute('value'),
-                      pass_text='После неудачной авторизации логин в поле сохранился',
-                      fail_text='После неудачной авторизации логин в поле не сохранился')
+        except:
+            self.is_exist(find='TestUser',
+                      where=self.user_name().get_attribute('value'))
         return self
 
     @allure.step('После неудачной авторизации в поле пароля отсутствует пароль')
     def pass_field_without_password(self):
         try:
             self.password()
-        except NoSuchElementException:
-            assert False, 'Не найден элемент с текстом пароля, смотри скриншот'
-        self.is_exist(find='',
+        except:
+            self.is_exist(find='',
                       where=self.password().get_attribute('value'),
                       pass_text='После неудачной авторизации пароль в поле не сохранился',
                       fail_text='После неудачной авторизации пароль в поле сохранился')
@@ -125,7 +116,7 @@ class LoginPage(BasePage):
 
     @allure.step('Проверяю соответствует ли имя пользователя ожидаемому')
     def username_check(self):
-        expected = (ConfigTools.data['pages']['report']['name'])
+        expected = (ConfigTools.data['name'])
         actual = self.avatar_login().text
         BasePage.is_exist(self,
                               find=expected,
@@ -136,7 +127,7 @@ class LoginPage(BasePage):
 
     @allure.step('Проверяю соответствует ли электоронная почта ожидаемой')
     def email_check(self):
-        expected = (ConfigTools.data['pages']['report']['email'])
+        expected = (ConfigTools.data['email'])
         actual = self.avatare_mail().text
 
         BasePage.is_exist(self,
