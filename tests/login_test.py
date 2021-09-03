@@ -25,12 +25,12 @@ class TestLoginNegativ():
         login_page\
             .submit_button()\
             .invalidCredentials_isNotExist()\
-            .url_check()
+            .url_check_page()
 
 @allure.epic('Логин: позитивные проверки')
 class TestLoginPositive:
-    logpass = [(ConfigTools.data['auth']['incorrect']['login'], ConfigTools.data['auth']['incorrect']['password']),
-               (ConfigTools.data['auth']['correct']['login'], ConfigTools.data['auth']['correct']['password'])]
+    logpass = [(ConfigTools.incorrect_login, ConfigTools.incorrect_password),
+               (ConfigTools.correct_login, ConfigTools.correct_password)]
 
     @allure.story('Параметры: сначала неправильный логин/пароль, потом правильный')
     @pytest.mark.parametrize("login, password", logpass)
