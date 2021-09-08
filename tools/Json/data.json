@@ -1,0 +1,13 @@
+﻿{
+    "project_url": "https://tt-develop.quality-lab.ru/",
+    "correct_login": "Тестовый пользователь",
+    "correct_password": "12345678",
+    "incorrect_login": "TestUser",
+    "incorrect_password": "Test",
+    "login_error": "Invalid credentials.",
+    "name": "Пользователь",
+    "email": "fake+494@quality-lab.ru",
+    "user": "Абдулин Ринат",
+    "work": "09:00-18:00",
+    "holidays": "' '" 
+}
