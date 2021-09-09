@@ -1,3 +1,5 @@
+import time
+
 from selenium.webdriver.common.by import By
 from .base_page import BasePage
 import allure
@@ -8,9 +10,10 @@ class LoginPage(BasePage):
     def __init__(self, browser):
         super().__init__(browser)
         # Поле ввода логина
-        self.user_name = lambda: self.browser.find_element(By.CSS_SELECTOR, "#username")
+        self.user_name = lambda: self.browser.find_element_by_css_selector(
+            "[name=_username]")
         # Поле ввода пароля
-        self.password = lambda: self.browser.find_element(By.CSS_SELECTOR, "#password")
+        self.password = lambda: self.browser.find_element_by_css_selector("#password")
         # Кнопка войти
         self.button = lambda: self.browser.find_element(By.NAME, "_submit")
         # Сообщение Invalid credentials.
@@ -24,16 +27,17 @@ class LoginPage(BasePage):
         self.avatare_mail = lambda: self.browser.find_element_by_xpath(
             ".//html/body/div[1]/header/div/div/div[2]/div/div/ul/li/div/div/div[1]/div/div[2]/span[2]")
 
-    error_message = ConfigTools.login_error
+    # Сообщение об ошибке
+    error_message = ConfigTools.login_error()
 
     @allure.step('Ввод логина')
     def user_name_input(self):
-        self.user_name().send_keys(ConfigTools.incorrect_login)
+        self.user_name().send_keys(ConfigTools.incorrect_login())
         return self
 
-    @allure.step('Ввод пароля Password')
+    @allure.step('Ввод пароля')
     def password_input(self):
-        self.password().send_keys(ConfigTools.incorrect_password)
+        self.password().send_keys(ConfigTools.incorrect_password())
         return self
 
     @allure.step('Нажать кнопку авторизации')
@@ -43,43 +47,24 @@ class LoginPage(BasePage):
 
     @allure.step('Проверка URL страницы авторизации')
     def url_check_page(self):
-        self.url_check()
+        self.validate_url()
         return self
 
     @allure.step('Считаю наличие текста "Invalid Credentials" на странице авторизации успехом')
     def invalidCredentials_isExist(self):
-        self.is_exist(find=self.error_message,
-                    where=self.invalid_text().text,
-                    pass_text=self.error_message + ' есть на странице',
-                    fail_text=self.error_message + ' нет на странице')
+        self.is_element_present(self.invalid_text)
         return self
 
     @allure.step('Считаю отсутствие текста "Invalid Credentials" на странице авторизации успехом')
     def invalidCredentials_isNotExist(self):
-        self.is_exist(find=self.error_message,
-                      where=self.invalid_text().text,
-                      pass_text=self.error_message + ' есть на странице',
-                      fail_text=self.error_message + ' нет на странице')
+        self.element_is_not_present(self.invalid_text)
         return self
-
 
     @allure.step('После неудачной авторизации в поле логина присутствует имя пользователя')
-    def login_field_with_user(self):
-        self.is_exist(find='TestUser',
-                      where=self.user_name().get_attribute('value'),
-                      pass_text='После неудачной авторизации логин в поле сохранился',
-                      fail_text='После неудачной авторизации логин в поле не сохранился')
+    def invalid_user_login_is_present_and_correct(self):
+        assert self.user_name().get_attribute('value') == ConfigTools.incorrect_login()
+        assert self.password().get_attribute("value") == ""
         return self
-
-    @allure.step('После неудачной авторизации в поле пароля отсутствует пароль')
-    def pass_field_without_password(self):
-        self.is_exist(find='',
-                      where=self.password().get_attribute('value'),
-                      pass_text='После неудачной авторизации пароль в поле не сохранился',
-                      fail_text='После неудачной авторизации пароль в поле сохранился')
-
-        return self
-
 
     @allure.step('Ввод логина сотрудника сотрудника')
     def username_validate_input(self, login):
@@ -91,39 +76,13 @@ class LoginPage(BasePage):
         self.password().send_keys(f"{password}")
         return self
 
-    @allure.step('Проверяю, действительно ли мы на странице c репортом')
-    def check_url(self):
-        BasePage.is_exist(self,
-                              find=BasePage.otchet_url,
-                              where=self.browser.current_url,
-                              pass_text='Мы находимся на странице с репортом',
-                              fail_text='Мы находимся не на странице с репортом')
-        return self
-
     @allure.step('Клик по кнопке аватара сотрудника')
     def avatar_button_click(self):
         self.avatar().click()
         return self
 
-
-    @allure.step('Проверяю соответствует ли имя пользователя ожидаемому')
-    def username_check(self):
-        expected = ConfigTools.name
-        actual = self.avatar_login().text
-        BasePage.is_exist(self,
-                              find=expected,
-                              where=str(actual),
-                              pass_text='Имя пользователя соответствует ожидаемому',
-                              fail_text='Имя пользователя не соответствует ожидаемому')
-        return self
-
-    @allure.step('Проверяю соответствует ли электоронная почта ожидаемой')
-    def email_check(self):
-        expected = ConfigTools.email
-        actual = self.avatare_mail().text
-        BasePage.is_exist(self,
-                              find=expected,
-                              where=str(actual),
-                              pass_text='Почта пользователя соостветствует ожидаемой',
-                              fail_text='Почта пользователя не соостветствует ожидаемой')
+    @allure.step("Проверка что авторизован верный пользователь")
+    def validate_login_user(self):
+        assert self.avatar_login().text == ConfigTools.correct_login()
+        assert self.avatare_mail().text == ConfigTools.email()
         return self

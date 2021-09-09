@@ -11,10 +11,19 @@ class CalendarPage(BasePage):
         super().__init__(browser)
 
         # блок с текстом, сообщающим текущий месяц и год
-        self.grafik_text = lambda: self.browser.find_element(By.ID, 'schedule-month-title')
+        self.grafik_text = lambda: self.browser.find_element_by_css_selector(
+            "h3.right_panel_name")
 
         # поп-ап "Обновление календаря"
         self.calendar_wait = lambda: self.browser.find_element(By.XPATH, '//*[@id="schedule-overlay"]/span')
+
+        # рабочие дни в календаре
+        self.schedule_working_days = lambda: self.browser.find_elements_by_css_selector(
+            ".schedule-badge--default")
+
+        # нерабочие дни в календаре
+        self.schedule_non_working_days = lambda: self.browser.find_elements_by_css_selector(
+            ".schedule-badge--no-event")
 
         # Календарь сотрудника
         self.calendar = lambda: self.browser.find_element(By.CSS_SELECTOR, "span.fc-title")
@@ -52,7 +61,7 @@ class CalendarPage(BasePage):
 
     @allure.step('Переход на страницу календаря')
     def calendar_button(self):
-        self.browser.get("https://tt-develop.quality-lab.ru/calendar/")
+        self.browser.get(ConfigTools.grafik_url())
         return self
 
     @allure.step('Ожидание поп-ап "Ожидание календаря"')
@@ -62,17 +71,10 @@ class CalendarPage(BasePage):
 
     @allure.step('Проверяет соответствует ли месяц и год на странице с графиком работника')
     def check_month_and_year(self):
-        expected = str(datetime.now().month) + str(datetime.now().year)
-        try:
-            self.grafik_text()
-        except:
-            self.is_exist(find=expected,
-                          where=self.grafik_text().text,
-                          pass_text='Месяц и год соответствуют ожидаемому',
-                          fail_text='Месяц и год не соответствуют ожидаемым')
+        assert self.grafik_text().text == datetime.now().strftime('%d.%m.%y')
         return self
 
-    @allure.step('кликаем кнопку выбора месяца')
+    @allure.step('Кликаем кнопку выбора месяца')
     def change_another_month(self):
         self.button_calendar().click()
         return self
@@ -90,16 +92,16 @@ class CalendarPage(BasePage):
     @allure.step('Выбираю сотрудника')
     def choose_another_employee(self):
         self.sotrudnik_dropdown().click()
-        self.sotrudnik_input().send_keys(ConfigTools.user, Keys.ENTER)
+        self.sotrudnik_input().send_keys(ConfigTools.user(), Keys.ENTER)
         self.submit_button().click()
         return self
 
     @allure.step('Проверка рабочих дней календаря')
     def check_exists_workdays_in_calendar(self):
-        self.check_exists_workdays()
+        self.is_element_present(self.schedule_working_days())
         return self
 
     @allure.step('Проверка выходных дней календаря')
     def check_exists_holidays_in_calendar(self):
-        self.check_exists_holidays()
+        self.is_element_present(self.schedule_non_working_days())
         return self
