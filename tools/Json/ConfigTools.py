@@ -53,5 +53,5 @@ class ConfigTools():
 
     # URL страницы отчета пользователя
     @staticmethod
-    def report_url():
-        return Tools.data['report_url']
+    def project_url():
+        return Tools.data['project_url']

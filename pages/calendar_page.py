@@ -105,7 +105,6 @@ class CalendarPage(BasePage):
         self.submit_button_employers().click()
         return self
 
-
     def get_working_days_list(self, offset: int = 0):
         """Получение списка рабочих дней в месяце в виде списка"""
         current_month = BasePage.normalize(offset)[0]
