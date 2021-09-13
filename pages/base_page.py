@@ -12,25 +12,9 @@ class BasePage:
     def wait_short(self):
         return WebDriverWait(self.browser, 15)
 
-    def is_element_present(self, element):
-        """Проверка наличия элемента"""
-        try:
-            element
-        except NoSuchElementException:
-            return False
-        return True
-
-    def element_is_not_present(self, element):
-        """Проверка отсутсвия элемента"""
-        try:
-            element
-        except NoSuchElementException:
-            return True
-        return False
-
     def validate_url(self):
         """Проверка url"""
-        assert self.browser.current_url == '/'.join([ConfigTools.project_url(), "login"]), "URL адрес не совпадает"
+        assert self.browser.current_url == '/'.join(ConfigTools.project_url(), "login"), "URL адрес не совпадает"
 
     @staticmethod
     def normalize(offset_month:int = 0, offset_year:int = 0):
