@@ -3,7 +3,6 @@ from LK.pages.login_page import LoginPage
 import allure
 from LK.tools.Json.ConfigTools import ConfigTools
 
-
 @allure.epic('Негативные проверки входа')
 class TestLogin():
     @allure.story('Проверка страницы авторизации с некорректным логином и паролем')

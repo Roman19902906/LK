@@ -5,7 +5,6 @@ import allure
 import requests
 
 
-
 @pytest.fixture(scope="function")
 def browser():
     os.environ['URL'] = 'https://tt-develop.quality-lab.ru'

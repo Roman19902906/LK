@@ -1,7 +1,4 @@
-import json
 from LK.tools.Json.path import Tools
-
-
 class ConfigTools():
 
     # Корректный логин пользователя для входа

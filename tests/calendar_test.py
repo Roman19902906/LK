@@ -10,9 +10,10 @@ class TestCalendar:
         calendar_page \
             .calendar_button() \
             .wait_calendar_button() \
-            .check_month_and_year() \
-            .check_exists_workdays_in_calendar() \
-            .check_exists_holidays_in_calendar()
+            .check_month_and_year()
+        days, workdays, weekends = calendar_page.get_working_days_stat(offset=0)
+        assert workdays > 0, "Не найдены рабочие дни"
+        assert weekends > 0, "Не найдены выходные дни"
 
     @allure.story('Проверка смены месяца')
     def test_month(self, auth):
@@ -25,9 +26,10 @@ class TestCalendar:
             .button_another_month() \
             .wait_calendar_button() \
             .check_another_month() \
-            .wait_calendar_button() \
-            .check_exists_workdays_in_calendar() \
-            .check_exists_holidays_in_calendar()
+            .wait_calendar_button()
+        days, workdays, weekends = calendar_page.get_working_days_stat(offset=0)
+        assert workdays > 0, "Не найдены рабочие дни"
+        assert weekends > 0, "Не найдены выходные дни"
 
     @allure.story('Проверка смены пользователя')
     def test_user(self, auth):
@@ -36,6 +38,7 @@ class TestCalendar:
             .calendar_button() \
             .wait_calendar_button() \
             .choose_another_employee() \
-            .wait_calendar_button() \
-            .check_exists_workdays_in_calendar() \
-            .check_exists_holidays_in_calendar()
+            .wait_calendar_button()
+        days, workdays, weekends = calendar_page.get_working_days_stat(offset=0)
+        assert workdays > 0, "Не найдены рабочие дни"
+        assert weekends > 0, "Не найдены выходные дни"
